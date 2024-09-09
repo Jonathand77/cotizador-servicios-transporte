@@ -31,19 +31,23 @@ const cotizacionSchema = new mongoose.Schema({
 
 const Cotizacion = mongoose.model('Cotizacion', cotizacionSchema);
 
-app.post('/api/cotizar', async (req, res) => {
-  const { numPasajeros } = req.body;
-
-  // Filtra los vehículos según el número de pasajeros
-  const vehiculosFiltrados = vehiculosDisponibles.filter(v => v.capacidad >= numPasajeros);
-
-  const nuevaCotizacion = new Cotizacion(req.body);
-  await nuevaCotizacion.save();
-
-  res.json({
-    mensaje: 'Cotización registrada con éxito',
-    vehiculos: vehiculosFiltrados
+app.post('/api/cotizar', (req, res) => {
+    const { numPasajeros } = req.body;
+  
+    const vehiculosDisponibles = [
+      { tipo: 'Camioneta', capacidad: 5 },
+      { tipo: 'Busetica', capacidad: 10 },
+      { tipo: 'Buseta', capacidad: 20 },
+      { tipo: 'Buseton', capacidad: 30 },
+      { tipo: 'Van', capacidad: 15 }
+    ];
+  
+    // Filtra los vehículos que tengan la capacidad necesaria
+    const vehiculosFiltrados = vehiculosDisponibles.filter(
+      vehiculo => vehiculo.capacidad >= numPasajeros
+    );
+  
+    res.json({ vehiculos: vehiculosFiltrados });
   });
-});
-
+  
 app.listen(5000, () => console.log('Servidor corriendo en puerto 5000'));
