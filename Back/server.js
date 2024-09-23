@@ -1,70 +1,44 @@
-// Importar los paquetes necesarios
 const express = require('express');
-const mysql = require('mysql2');
-const bodyParser = require('body-parser');
 const cors = require('cors');
-
-// Crear una instancia de Express
+const mysql = require('mysql2'); // Importar el paquete MySQL
 const app = express();
 
-// Middleware para permitir solicitudes CORS
 app.use(cors());
+app.use(express.json());
 
-// Middleware para parsear el body de las solicitudes (JSON)
-app.use(bodyParser.json());
-
-// Configurar la conexión a la base de datos MySQL
+// Configura la conexión a la base de datos
 const connection = mysql.createConnection({
-  host: 'localhost',    // Cambia esto según tu configuración
-  user: 'root',         // Cambia esto según tu configuración
-  password: '1234',         // Cambia esto según tu configuración
-  database: 'cotizador_db'  // Nombre de la base de datos
+  host: 'localhost',  // O el host de tu servidor de base de datos
+  user: 'root', // Usuario de MySQL
+  password: 'root', // Contraseña de MySQL
+  database: 'cotizador_db'  // Nombre de tu base de datos creada en MySQL Workbench
 });
 
 // Conectar a la base de datos
-connection.connect((err) => {
+connection.connect(err => {
   if (err) {
-    console.error('Error al conectar a la base de datos:', err.stack);
+    console.error('Error conectando a la base de datos: ', err.stack);
     return;
   }
-  console.log('Conectado a la base de datos MySQL');
+  console.log('Conexión a la base de datos MySQL exitosa');
 });
 
-// Endpoint para realizar una cotización
+// Definir rutas de API
 app.post('/api/cotizar', (req, res) => {
-  // Obtener los datos del body de la solicitud
-  const { numPasajeros, lugarIda, lugarRegreso, temporada } = req.body;
+  const { numPasajeros } = req.body;
 
-  // Consulta SQL para obtener el vehículo disponible y el precio base
-  const query = `
-    SELECT v.tipo_vehiculo, v.capacidad_vehiculo, p.precio_base
-    FROM vehiculos v
-    JOIN precios p ON v.id_vehiculo = p.id_vehiculo
-    WHERE p.id_municipio_ida = ?
-    AND p.id_municipio_regreso = ?
-    AND v.capacidad_vehiculo >= ?
-    AND p.temporada = ?
-  `;
+  // Consulta SQL para obtener los vehículos disponibles según el número de pasajeros
+  const query = 'SELECT * FROM vehiculos WHERE capacidad >= ?';
 
-  // Ejecutar la consulta en la base de datos
-  connection.query(query, [lugarIda, lugarRegreso, numPasajeros, temporada], (err, results) => {
+  // Ejecutar la consulta
+  connection.query(query, [numPasajeros], (err, results) => {
     if (err) {
-      console.error('Error en la consulta:', err);
-      return res.status(500).json({ message: 'Error en la consulta' });
+      console.error('Error ejecutando la consulta: ', err);
+      return res.status(500).json({ error: 'Error en el servidor' });
     }
-    
-    // Verificar si se encontraron resultados
-    if (results.length === 0) {
-      return res.status(404).json({ message: 'No se encontraron vehículos disponibles para los criterios ingresados.' });
-    }
-
-    // Enviar los resultados como respuesta JSON
     res.json({ vehiculos: results });
   });
 });
 
-// Puerto en el que el servidor va a escuchar
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Servidor escuchando en el puerto ${PORT}`);
-});
+// Iniciar el servidor
+app.listen(5000, () => console.log('Servidor corriendo en puerto 5000'));
