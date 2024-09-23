@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Form, Button, Container, Row, Col, Card, ListGroup } from 'react-bootstrap';
 
@@ -15,6 +15,21 @@ const FormCotizacion = () => {
   });
   
   const [vehiculos, setVehiculos] = useState([]);
+  const [municipios, setMunicipios] = useState([]);
+
+  // Obtener los municipios al cargar el componente
+  useEffect(() => {
+    const fetchMunicipios = async () => {
+      try {
+        const res = await axios.get('http://localhost:5000/api/municipios');
+        setMunicipios(res.data.municipios);
+      } catch (error) {
+        console.error('Error al obtener los municipios', error);
+      }
+    };
+    
+    fetchMunicipios();
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -74,20 +89,9 @@ const FormCotizacion = () => {
                   required
                 >
                   <option value="">Selecciona un lugar de ida</option>
-                  <option value="Municipio 1">ANTIOQUIA TROPICAL CLUB BARBOSA</option>
-                  <option value="Municipio 2">ALTO PALMAS</option>
-                  <option value="Municipio 2">BARBOSA</option>
-                  <option value="Municipio 2">BELLO</option>
-                  <option value="Municipio 2">CALDAS</option>
-                  <option value="Municipio 2">HATILLO</option>
-                  <option value="Municipio 2">SAN ANTONIO DE PRADO</option>
-                  <option value="Municipio 2">SAN CRISTOBAL</option>
-                  <option value="Municipio 2">CAUCA VIEJO</option>
-                  <option value="Municipio 2">COMFAMA BALLENITAS COPACABANA</option>
-                  <option value="Municipio 2">COMFAMA LA ESTRELLA</option>
-                  <option value="Municipio 2">COMFAMA GUATAPE</option>
-                  <option value="Municipio 2">COMFAMA RIONEGRO</option>
-                  <option value="Municipio 2">COMFENALCO FARALLONES</option>
+                  {municipios.map((municipio) => (
+                    <option key={municipio.id} value={municipio.nombre}>{municipio.nombre}</option>
+                  ))}
                 </Form.Control>
               </Form.Group>
             </Col>
@@ -147,20 +151,9 @@ const FormCotizacion = () => {
                   required
                 >
                   <option value="">Selecciona un lugar de regreso</option>
-                  <option value="Municipio 1">ANTIOQUIA TROPICAL CLUB BARBOSA</option>
-                  <option value="Municipio 2">ALTO PALMAS</option>
-                  <option value="Municipio 2">BARBOSA</option>
-                  <option value="Municipio 2">BELLO</option>
-                  <option value="Municipio 2">CALDAS</option>
-                  <option value="Municipio 2">HATILLO</option>
-                  <option value="Municipio 2">SAN ANTONIO DE PRADO</option>
-                  <option value="Municipio 2">SAN CRISTOBAL</option>
-                  <option value="Municipio 2">CAUCA VIEJO</option>
-                  <option value="Municipio 2">COMFAMA BALLENITAS COPACABANA</option>
-                  <option value="Municipio 2">COMFAMA LA ESTRELLA</option>
-                  <option value="Municipio 2">COMFAMA GUATAPE</option>
-                  <option value="Municipio 2">COMFAMA RIONEGRO</option>
-                  <option value="Municipio 2">COMFENALCO FARALLONES</option>
+                  {municipios.map((municipio) => (
+                    <option key={municipio.id} value={municipio.nombre}>{municipio.nombre}</option>
+                  ))}
                 </Form.Control>
               </Form.Group>
             </Col>

@@ -23,15 +23,31 @@ connection.connect(err => {
   console.log('Conexión a la base de datos MySQL exitosa');
 });
 
+app.get('/api/municipios', (req, res) => {
+  const query = 'SELECT * FROM municipios';
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error('Error al obtener municipios: ', err);
+      return res.status(500).json({ error: 'Error en el servidor' });
+    }
+    res.json({ municipios: results });
+  });
+});
+
 // Definir rutas de API
 app.post('/api/cotizar', (req, res) => {
-  const { numPasajeros } = req.body;
+  const { numPasajeros, lugarIda } = req.body;
 
-  // Consulta SQL para obtener los vehículos disponibles según el número de pasajeros
-  const query = 'SELECT * FROM vehiculos WHERE capacidad >= ?';
+  // Consulta SQL para obtener los vehículos disponibles según el número de pasajeros y lugar de ida
+  const query = `
+    SELECT v.id, v.tipo, v.capacidad, pb.precio, m.nombre AS municipio
+    FROM vehiculos v
+    JOIN precios_base pb ON v.id = pb.vehiculo_id
+    JOIN municipios m ON pb.municipio_id = m.id
+    WHERE v.capacidad >= ? AND m.nombre = ?`;
 
   // Ejecutar la consulta
-  connection.query(query, [numPasajeros], (err, results) => {
+  connection.query(query, [numPasajeros, lugarIda], (err, results) => {
     if (err) {
       console.error('Error ejecutando la consulta: ', err);
       return res.status(500).json({ error: 'Error en el servidor' });
