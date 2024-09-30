@@ -49,6 +49,11 @@ const FormCotizacion = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Validar que la fecha de regreso no sea menor a la fecha de ida
+    if (formData.fechaRegreso < formData.fechaIda) {
+      setErrorMessage("La fecha de regreso no puede ser menor a la fecha de ida.");
+      return;
+    }
     try {
       const res = await axios.post(
         "http://localhost:5000/api/cotizar",
@@ -147,6 +152,7 @@ const FormCotizacion = () => {
                   name="fechaRegreso"
                   value={formData.fechaRegreso}
                   onChange={handleChange}
+                  min={formData.fechaIda} // Establecer la fecha mínima para el regreso
                   required
                 />
               </Form.Group>
