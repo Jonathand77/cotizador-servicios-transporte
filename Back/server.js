@@ -11,7 +11,7 @@ const connection = mysql.createConnection({
   host: 'localhost',  // O el host de tu servidor de base de datos
   user: 'root', // Usuario de MySQL
   password: 'root', // Contraseña de MySQL
-  database: 'cotizador_db'  // Nombre de tu base de datos creada en MySQL Workbench
+  database: 'cotizador_viajes'  // Nombre de tu base de datos creada en MySQL Workbench
 });
 
 // Conectar a la base de datos
@@ -23,35 +23,38 @@ connection.connect(err => {
   console.log('Conexión a la base de datos MySQL exitosa');
 });
 
-app.get('/api/municipios', (req, res) => {
-  const query = 'SELECT * FROM municipios';
+// Agrega este nuevo endpoint para obtener los destinos
+app.get('/api/destinos', (req, res) => {
+  const query = 'SELECT * FROM destinos';
   connection.query(query, (err, results) => {
     if (err) {
-      console.error('Error al obtener municipios: ', err);
+      console.error('Error al obtener destinos: ', err);
       return res.status(500).json({ error: 'Error en el servidor' });
     }
-    res.json({ municipios: results });
+    res.json({ destinos: results });
   });
 });
 
-// Definir rutas de API
+// Modifica tu endpoint para cotizar
 app.post('/api/cotizar', (req, res) => {
   const { numPasajeros, lugarIda } = req.body;
 
   // Consulta SQL para obtener los vehículos disponibles según el número de pasajeros y lugar de ida
   const query = `
-    SELECT v.id, v.tipo, v.capacidad, pb.precio, m.nombre AS municipio
+    SELECT v.id, v.tipo, v.capacidad, dv.valor AS valor_base_un_dia, m.nombre AS destino
     FROM vehiculos v
-    JOIN precios_base pb ON v.id = pb.vehiculo_id
-    JOIN municipios m ON pb.municipio_id = m.id
-    WHERE v.capacidad >= ? AND m.nombre = ?`;
+    JOIN valores_base dv ON dv.vehiculo_id = v.id
+    JOIN destinos m ON m.id = dv.destino_id
+    WHERE v.capacidad >= ? AND m.id = ?
+  `;
 
   // Ejecutar la consulta
-  connection.query(query, [numPasajeros, lugarIda], (err, results) => {
+  connection.query(query, [lugarIda, numPasajeros], (err, results) => {
     if (err) {
       console.error('Error ejecutando la consulta: ', err);
       return res.status(500).json({ error: 'Error en el servidor' });
     }
+    console.log('Resultados obtenidos: ', results);
     res.json({ vehiculos: results });
   });
 });
