@@ -41,7 +41,7 @@ app.post("/api/cotizar", (req, res) => {
   console.log('Número de pasajeros:', numPasajeros);
   console.log('Lugar de ida:', lugarIda);
 
-  // Consulta SQL para obtener los vehículos disponibles según el número de pasajeros y lugar de ida
+  // Consulta SQL para obtener los vehículos disponibles según el número de pasajeros y destino
   const query = `
     SELECT v.id, v.tipo, v.capacidad, dv.valor AS valor_base_un_dia, m.nombre AS destino
     FROM vehiculos v

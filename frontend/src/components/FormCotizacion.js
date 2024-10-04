@@ -8,6 +8,7 @@ import {
   Col,
   Card,
   ListGroup,
+  Alert, // Importar el componente Alert para mostrar mensajes
 } from "react-bootstrap";
 
 const FormCotizacion = () => {
@@ -28,6 +29,8 @@ const FormCotizacion = () => {
   const [destinos, setDestinos] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [avisoPasajeros, setAvisoPasajeros] = useState(false); // Estado para mostrar aviso de pasajeros
+
 
   // Obtener los destinos al cargar el componente
   useEffect(() => {
@@ -44,6 +47,7 @@ const FormCotizacion = () => {
   }, []);
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -51,7 +55,9 @@ const FormCotizacion = () => {
     e.preventDefault();
     // Validar que la fecha de regreso no sea menor a la fecha de ida
     if (formData.fechaRegreso < formData.fechaIda) {
-      setErrorMessage("La fecha de regreso no puede ser menor a la fecha de ida.");
+      setErrorMessage(
+        "La fecha de regreso no puede ser menor a la fecha de ida."
+      );
       return;
     }
     try {
@@ -66,7 +72,55 @@ const FormCotizacion = () => {
     } catch (error) {
       console.error("Error al enviar el formulario", error);
       setLoading(false); // Finalizar loading
-      setErrorMessage("Error al obtener los vehículos disponibles. Intente nuevamente.");
+      setErrorMessage(
+        "Error al obtener los vehículos disponibles. Intente nuevamente."
+      );
+    }
+
+    // Convertir fechas y horas para comparar
+    const fechaIda = new Date(`${formData.fechaIda}T${formData.horaIda}`);
+    const fechaRegreso = new Date(
+      `${formData.fechaRegreso}T${formData.horaRegreso}`
+    );
+
+    // Validar si la fecha de regreso es el mismo día y la hora de regreso es menor a la de ida
+    if (
+      formData.fechaIda === formData.fechaRegreso &&
+      fechaRegreso <= fechaIda
+    ) {
+      setErrorMessage(
+        "La hora de regreso no puede ser menor o igual a la hora de ida si es el mismo día."
+      );
+      return;
+    }
+
+    setLoading(true);
+    setAvisoPasajeros(false); // Resetear el mensaje de advertencia
+
+    // Verificar si el número de pasajeros es mayor a 40
+    if (formData.numPasajeros > 40) {
+      setAvisoPasajeros(true); // Mostrar el aviso si supera 40 pasajeros
+    }
+
+    // Si la validación pasa, procedemos con la solicitud
+    try {
+      setErrorMessage(""); // Limpiar mensajes de error
+      setLoading(true);
+      const res = await axios.post(
+        "http://localhost:5000/api/cotizar",
+        formData
+      );
+      setVehiculos(res.data.vehiculos);
+      if (res.data.vehiculos.length > 0) {
+        setValorBase(res.data.vehiculos[0].valor_base_un_dia); // Asignar el valor base del destino
+      }
+    } catch (error) {
+      console.error("Error al enviar el formulario", error);
+      setErrorMessage(
+        "Error al obtener los vehículos disponibles. Intente nuevamente."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -105,7 +159,7 @@ const FormCotizacion = () => {
           <Row>
             <Col md={6}>
               <Form.Group controlId="lugarIda">
-                <Form.Label>Lugar de Ida</Form.Label>
+                <Form.Label>Destino</Form.Label>
                 <Form.Control
                   as="select"
                   name="lugarIda"
@@ -166,6 +220,11 @@ const FormCotizacion = () => {
                   value={formData.horaRegreso}
                   onChange={handleChange}
                   required
+                  min={
+                    formData.fechaIda === formData.fechaRegreso
+                      ? formData.horaIda // Si es el mismo día, la hora mínima de regreso será la de ida
+                      : null // De lo contrario, no hay restricción
+                  }
                 />
               </Form.Group>
             </Col>
@@ -174,7 +233,7 @@ const FormCotizacion = () => {
           <Row>
             <Col md={6}>
               <Form.Group controlId="lugarRegreso">
-                <Form.Label>Lugar de Regreso</Form.Label>
+                <Form.Label>Lugar de salida</Form.Label>
                 <Form.Control
                   as="select"
                   name="lugarRegreso"
@@ -203,15 +262,25 @@ const FormCotizacion = () => {
                   name="numPasajeros"
                   value={formData.numPasajeros}
                   onChange={handleChange}
-                  min="5"
-                  max="40"
                   required
                 />
               </Form.Group>
             </Col>
           </Row>
+          
+          {/* Mostrar aviso si supera los 40 pasajeros */}
+          {avisoPasajeros && (
+            <Alert variant="warning" className="mt-2">
+              Requerirá más de un vehículo.
+            </Alert>
+          )}
 
-          <Button variant="primary" type="submit" className="mt-3 w-100" disabled={loading}>
+          <Button
+            variant="primary"
+            type="submit"
+            className="mt-3 w-100"
+            disabled={loading}
+          >
             {loading ? "Cargando..." : "Cotizar Viaje"}
           </Button>
         </Form>
