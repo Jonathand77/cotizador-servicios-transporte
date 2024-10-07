@@ -1,21 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet"');
+
 /* Global Styles */
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f9;
-    color: #3F735B;
-  }
-  
-  .app-container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-  
-  /* Header */
-  /* Estilos para la Cabecera */
+  font-family: 'Oswald', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f9;
+  color: #3f735b;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+  font-family: 'Oswald', sans-serif;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header */
+/* Estilos para la Cabecera */
 header {
+  font-family: 'Oswald', sans-serif;
   background-color: #227337;
   color: white;
   padding: 20px;
@@ -39,175 +46,245 @@ header::before {
 
 @keyframes rotateBackground {
   from {
-      transform: rotate(45deg);
+    transform: rotate(45deg);
   }
   to {
-      transform: rotate(405deg);
+    transform: rotate(405deg);
   }
 }
-  
-  /* Navbar */
-  .navbar {
-    background-color: #BFB73F;
-    padding: 10px;
-  }
 
-  .navbar ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: space-around;
-  }
-  
-  .navbar li {
-    margin: 0 15px;
-  }
-
-  .navbar ul li a {
-    color: white;
-    text-decoration: none;
-    padding: 14px 20px;
-    display: block;
-  }
-
-  .navbar ul li a:hover {
-    background-color: #3F735B;
-  }
-
-  .navbar img {
-    height: 70px; /* Set a fixed height for the logo */
-    width: auto; /* Maintain aspect ratio */
-    margin-right: 20px; /* Space between the logo and other navbar items */
-  }
-  
-  .navbar a {
-    color: #BFA93B;
-    text-decoration: none;
-    font-weight: bold;
-  }
-  
-  .navbar a:hover {
-    text-decoration: underline;
-  }
-  
-  /* Formulario */
-  .form-container {
-    max-width: 600px;
-    margin: 2rem auto;
-    padding: 1rem;
-    background-color: white;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .cotizacion-form label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-  
-  .cotizacion-form input, .cotizacion-form select {
-    width: 100%;
-    padding: 0.5rem;
-    margin-bottom: 1rem;
-    border: 1px solid #F2F2F2;
-    border-radius: 3px;
-  }
-
-  .btn {
-    color: var(--bs-btn-hover-color);
-    background-color: #227337;
-    border-color: #227337;
-  }
-
-  .btn:hover {
-    color: var(--bs-btn-hover-color);
-    background-color: #3F735B;
-    border-color: #3F735B;
-  }
-  
-  .btn-submit {
-    width: 100%;
-    padding: 0.7rem;
-    background-color: #227337;
-    color: white;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-  }
-  
-  .btn-submit:hover {
-    background-color: #227337;
-  }
-  
-  /* Vehículos Disponibles */
-  .vehiculos-disponibles {
-    margin-top: 2rem;
-  }
-  
-  .vehiculos-disponibles ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .vehiculos-disponibles li {
-    background-color: #F2F2F2;
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 3px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Footer */
-  /* Estilos para el pie de página */
-
-  .elementor-inner {
-    padding: 20px;
-  }
-
-.elementor-widget-text-editor.elementor-drop-cap-view-stacked .elementor-drop-cap {
-  background-color: #69727d;
-  color: #F2F2F2;
+/* Navbar */
+.navbar {
+  font-family: 'Oswald', sans-serif;
+  background-color: #3f735b;
+  padding: 10px;
 }
 
-.elementor-widget-text-editor.elementor-drop-cap-view-framed .elementor-drop-cap {
-  color: #69727d;
-  border: 3px solid;
-  background-color: transparent;
+.navbar ul {
+  font-family: 'Oswald', sans-serif;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: space-around;
 }
 
-.elementor-widget-text-editor:not(.elementor-drop-cap-view-default) .elementor-drop-cap {
-  margin-top: 8px;
+.navbar li {
+  margin: 0 15px;
 }
 
-.elementor-widget-text-editor:not(.elementor-drop-cap-view-default) .elementor-drop-cap-letter {
-  width: 1em;
-  height: 1em;
+.navbar ul li a {
+  border-radius: 10%;
+  color: white;
+  text-decoration: none;
+  padding: 14px 20px;
+  display: block;
 }
 
-.elementor-widget-text-editor .elementor-drop-cap {
-  float: left;
-  text-align: center;
-  line-height: 1;
-  font-size: 50px;
+.navbar ul li a:hover {
+  background-color: #bfb73f
 }
 
-.elementor-widget-text-editor .elementor-drop-cap-letter {
-  display: inline-block;
+.navbar img {
+  height: 70px; /* Set a fixed height for the logo */
+  width: auto; /* Maintain aspect ratio */
+  margin-right: 20px; /* Space between the logo and other navbar items */
 }
 
-/* Estilos para el logo */
-.elementor-widget-image img {
-  width: 243px;
-  height: 89px;
+.navbar a {
+  color: #bfa93b;
+  text-decoration: none;
+  font-weight: bold;
 }
 
-/* Ocultando elementos de la barra de administración */
-#wp-admin-bar-new-elementor_lead {
-  display: none;
+.navbar a:hover {
+  text-decoration: underline;
 }
 
-body.post-type-elementor_lead .wrap a.page-title-action {
-  display: none;
+/* Formulario */
+
+.mt-4 {
+  font-family: 'Oswald', sans-serif;
+  margin-top: 1.5rem !important;
+  margin-bottom: 1.5rem !important;
+}
+
+.p-4 {
+  font-family: 'Oswald', sans-serif;
+  padding: 2rem !important;
+}
+
+.form-container {
+  font-family: 'Oswald', sans-serif;
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos globales para los labels */
+.form-label {
+  font-family: 'Oswald', sans-serif;
+  margin-bottom: 10px; /* Ajusta el valor según la cantidad de espacio que necesites */
+  margin-top: 20px; /* Ajusta también el espacio superior si es necesario */
+}
+
+.cotizacion-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.cotizacion-form input,
+.cotizacion-form select {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #f2f2f2;
+  border-radius: 3px;
+}
+
+.btn {
+  font-family: 'Oswald', sans-serif;
+  margin-bottom: 30px;
+  color: var(--bs-btn-hover-color);
+  background-color: #227337;
+  border-color: #227337;
+}
+
+.btn:hover {
+  color: var(--bs-btn-hover-color);
+  background-color: #3f735b;
+  border-color: #3f735b;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 0.7rem;
+  background-color: #227337;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.btn-submit:hover {
+  background-color: #227337;
+}
+
+.alert-warning {
+  border-left: 5px solid #f0ad4e;
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+
+/* Estilos para las tarjetas de vehículos */
+
+.shadow-sm:hover {
+  transform: scale(1.05);
+}
+
+.card {
+  font-family: 'Oswald', sans-serif;
+  border-radius: 10px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.card img {
+  height: 200px; /* Ajusta la altura de la imagen */
+  object-fit: cover;
+}
+
+.card-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.5rem;
+  color: #227337;
+  font-weight: bold;
+}
+
+.card-text {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1rem;
+  color: #3f735b;
+}
+
+/* Botón de compartir */
+.btn-primary {
+  font-family: 'Oswald', sans-serif;
+  background-color: #227337;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #3f735b;
+}
+
+.list-group-item {
+  border-radius: 5px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+}
+
+.list-group-item:nth-child(even) {
+  background-color: #f4f4f9;
+}
+
+
+/* Footer */
+.footer {
+  margin-top: 20px;
+  font-family: 'Oswald', sans-serif;
+  background-color: #e5e5e5; /* Color de fondo */
+  padding: 20px 20px; /* Espaciado superior e inferior */
+  text-align: center; /* Centrar texto */
+  border-top: 1px solid #dee2e6; /* Línea superior */
+}
+
+.footer-inner {
+  max-width: 1200px; /* Ancho máximo para el contenido */
+  margin: 0 auto; /* Centrar el contenido */
+  padding: 0 20px; /* Espaciado lateral */
+}
+
+.footer-section {
+  margin-bottom: 20px; /* Espaciado entre secciones */
+}
+
+.footer-title {
+  font-family: 'Oswald', sans-serif; /* Tipografía personalizada */
+  font-size: 24px; /* Tamaño de fuente */
+  margin-bottom: 10px; /* Espaciado inferior */
+}
+
+.footer-divider {
+  width: 100px; /* Ancho de la línea */
+  height: 2px; /* Grosor de la línea */
+  background-color: #007bff; /* Color de la línea */
+  margin: 0 auto 10px; /* Centrando la línea */
+}
+
+.footer-logo {
+  max-width: 100%; /* Adaptar el tamaño del logo */
+  height: auto; /* Mantener la proporción del logo */
+}
+
+.footer-text {
+  font-size: 14px; /* Tamaño de fuente para el texto */
+  line-height: 1.5; /* Espaciado entre líneas */
+}
+
+.contact-section {
+  margin-top: 20px; /* Espaciado superior para la sección de contacto */
+}
+
+.contact-section a {
+  color: #007bff; /* Color de los enlaces */
+  text-decoration: none; /* Sin subrayado */
+}
+
+.contact-section a:hover {
+  text-decoration: underline; /* Subrayado al pasar el mouse */
 }

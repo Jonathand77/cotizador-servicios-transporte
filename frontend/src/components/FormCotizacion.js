@@ -1,4 +1,11 @@
 import React, { useState, useEffect } from "react";
+import ShareIcon from "@mui/icons-material/Share";
+import { AiOutlineSend } from "react-icons/ai";
+import Buseton from "../assets/img/BusetonOpcion1.jpeg";
+import Bus from "../assets/img/Bus.jpg";
+import Buseta from "../assets/img/Buseta.jpeg";
+import Mercedes from "../assets/img/Van.jpeg";
+import Micronissan from "../assets/img/MicroNissanTipoEscolar.jpg";
 import axios from "axios";
 import {
   Form,
@@ -14,10 +21,10 @@ import {
 const FormCotizacion = () => {
   const [formData, setFormData] = useState({
     fechaIda: "",
-    lugarIda: "",
+    lugarSalida: "",
     horaIda: "",
     fechaRegreso: "",
-    lugarRegreso: "",
+    destino: "",
     horaRegreso: "",
     temporada: "Baja",
     numPasajeros: 1,
@@ -27,27 +34,40 @@ const FormCotizacion = () => {
   //const [municipios, setMunicipios] = useState([]);
   const [valorBase, setValorBase] = useState(null);
   const [destinos, setDestinos] = useState([]);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState([]);
   const [loading, setLoading] = useState(false);
   const [avisoPasajeros, setAvisoPasajeros] = useState(false); // Estado para mostrar aviso de pasajeros
 
+  const imagenesVehiculos = {
+    BUSETON: Buseton,
+    BUS: Bus,
+    BUSETA: Buseta,
+    MERCEDES: Mercedes,
+    MICRONISSANURVANESCOLAR: Micronissan,
+  };
 
-  // Obtener los destinos al cargar el componente
+  // Obtener destinos según el lugar de salida
   useEffect(() => {
-    const fetchDestinos = async () => {
+    const fetchDestinos = async (lugarSalida) => {
       try {
-        const res = await axios.get("http://localhost:5000/api/destinos");
-        setDestinos(res.data.destinos); // Guardar destinos en lugar de municipios
+        const res = await axios.get(`http://localhost:5000/api/destinos`, {
+          params: { lugarSalida },
+        });
+        setDestinos(res.data.destinos); // Guardar destinos
       } catch (error) {
         console.error("Error al obtener los destinos", error);
       }
     };
 
+    if (formData.lugarSalida) {
+      fetchDestinos(formData.lugarSalida);
+    } else {
+      setDestinos([]); // Resetea los destinos si no hay lugar de salida
+    }
     fetchDestinos();
-  }, []);
+  }, [formData.lugarSalida]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -89,7 +109,7 @@ const FormCotizacion = () => {
       fechaRegreso <= fechaIda
     ) {
       setErrorMessage(
-        "La hora de regreso no puede ser menor o igual a la hora de ida si es el mismo día."
+        "La hora de regreso no puede ser menor a la hora de ida si es el mismo día."
       );
       return;
     }
@@ -132,7 +152,7 @@ const FormCotizacion = () => {
           <Row>
             <Col md={6}>
               <Form.Group controlId="fechaIda">
-                <Form.Label>Fecha de Ida</Form.Label>
+                <Form.Label className="form-label">Fecha de Ida</Form.Label>
                 <Form.Control
                   type="date"
                   name="fechaIda"
@@ -144,7 +164,7 @@ const FormCotizacion = () => {
             </Col>
             <Col md={6}>
               <Form.Group controlId="horaIda">
-                <Form.Label>Hora de Ida</Form.Label>
+                <Form.Label className="form-label">Hora de Ida</Form.Label>
                 <Form.Control
                   type="time"
                   name="horaIda"
@@ -158,16 +178,16 @@ const FormCotizacion = () => {
 
           <Row>
             <Col md={6}>
-              <Form.Group controlId="lugarIda">
-                <Form.Label>Destino</Form.Label>
+              <Form.Group controlId="lugarSalida">
+                <Form.Label className="form-label">Lugar de salida</Form.Label>
                 <Form.Control
                   as="select"
-                  name="lugarIda"
+                  name="lugarSalida"
                   value={formData.lugarIda}
                   onChange={handleChange}
                   required
                 >
-                  <option value="">Selecciona un lugar de ida</option>
+                  <option value="">Selecciona tú lugar de salida</option>
                   {destinos.map(
                     (
                       destino // Cambiar de municipios a destinos
@@ -182,7 +202,7 @@ const FormCotizacion = () => {
             </Col>
             <Col md={6}>
               <Form.Group controlId="temporada">
-                <Form.Label>Temporada</Form.Label>
+                <Form.Label className="form-label">Temporada</Form.Label>
                 <Form.Control
                   as="select"
                   name="temporada"
@@ -200,7 +220,7 @@ const FormCotizacion = () => {
           <Row>
             <Col md={6}>
               <Form.Group controlId="fechaRegreso">
-                <Form.Label>Fecha de Regreso</Form.Label>
+                <Form.Label className="form-label">Fecha de Regreso</Form.Label>
                 <Form.Control
                   type="date"
                   name="fechaRegreso"
@@ -213,7 +233,7 @@ const FormCotizacion = () => {
             </Col>
             <Col md={6}>
               <Form.Group controlId="horaRegreso">
-                <Form.Label>Hora de Regreso</Form.Label>
+                <Form.Label className="form-label">Hora de Regreso</Form.Label>
                 <Form.Control
                   type="time"
                   name="horaRegreso"
@@ -232,16 +252,16 @@ const FormCotizacion = () => {
 
           <Row>
             <Col md={6}>
-              <Form.Group controlId="lugarRegreso">
-                <Form.Label>Lugar de salida</Form.Label>
+              <Form.Group controlId="destino">
+                <Form.Label className="form-label">Destino</Form.Label>
                 <Form.Control
                   as="select"
-                  name="lugarRegreso"
+                  name="destino"
                   value={formData.lugarRegreso}
                   onChange={handleChange}
                   required
                 >
-                  <option value="">Selecciona un lugar de regreso</option>
+                  <option value="">Selecciona un lugar de salida</option>
                   {destinos.map(
                     (
                       destino // Cambiar de municipios a destinos
@@ -256,7 +276,9 @@ const FormCotizacion = () => {
             </Col>
             <Col md={6}>
               <Form.Group controlId="numPasajeros">
-                <Form.Label>Número de Pasajeros</Form.Label>
+                <Form.Label className="form-label">
+                  Número de Pasajeros
+                </Form.Label>
                 <Form.Control
                   type="number"
                   name="numPasajeros"
@@ -267,7 +289,7 @@ const FormCotizacion = () => {
               </Form.Group>
             </Col>
           </Row>
-          
+
           {/* Mostrar aviso si supera los 40 pasajeros */}
           {avisoPasajeros && (
             <Alert variant="warning" className="mt-2">
@@ -281,29 +303,45 @@ const FormCotizacion = () => {
             className="mt-3 w-100"
             disabled={loading}
           >
-            {loading ? "Cargando..." : "Cotizar Viaje"}
+            {loading ? "Cargando..." : "Cotizar Viaje  "}
+            <AiOutlineSend style={{ marginRight: "8px", fontSize: "24px" }} />
           </Button>
         </Form>
 
-        <div className="mt-4">
-          <h3>Vehículos Disponibles</h3>
-          {errorMessage && <p className="text-danger">{errorMessage}</p>}
-          <ListGroup>
-            {vehiculos.length > 0 ? (
-              vehiculos.map((vehiculo, index) => (
-                <ListGroup.Item key={index}>
-                  {vehiculo.tipo} - Capacidad: {vehiculo.capacidad} pasajeros -
-                  Precio: ${vehiculo.valor_base_un_dia}
-                </ListGroup.Item>
-              ))
-            ) : (
-              <p>
-                No hay vehículos disponibles para la cantidad de pasajeros
-                ingresada.
-              </p>
-            )}
-          </ListGroup>
-        </div>
+        <Row>
+          {vehiculos.length > 0 ? (
+            vehiculos.map((vehiculo, index) => (
+              <Col md={4} key={index} className="mb-4">
+                <Card className="shadow-sm h-100">
+                  <Card.Img
+                    variant="top"
+                    src={imagenesVehiculos[vehiculo.tipo]} // Asigna la imagen según el tipo de vehículo
+                    alt={`Imagen de ${vehiculo.tipo}`}
+                  />
+                  <Card.Body>
+                    <Card.Title>{vehiculo.tipo}</Card.Title>
+                    <Card.Text>
+                      Capacidad: {vehiculo.capacidad} pasajeros <br />
+                      Precio: ${vehiculo.valor_base_un_dia}
+                    </Card.Text>
+                    <Button
+                      variant="primary"
+                      onClick={() => alert(`Compartir ${vehiculo.tipo}`)} // Lógica de compartir
+                      endIcon={<ShareIcon />}
+                    >
+                      Cotizar
+                    </Button>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))
+          ) : (
+            <p>
+              No hay vehículos disponibles para la cantidad de pasajeros
+              ingresada.
+            </p>
+          )}
+        </Row>
       </Card>
     </Container>
   );

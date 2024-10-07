@@ -11,7 +11,7 @@ const connection = mysql.createConnection({
   host: "localhost", // O el host de tu servidor de base de datos
   user: "root", // Usuario de MySQL
   password: "root", // Contraseña de MySQL
-  database: "cotizador_viajes", // Nombre de tu base de datos creada en MySQL Workbench
+  database: "base_cotizador", // Nombre de tu base de datos creada en MySQL Workbench
 });
 
 // Conectar a la base de datos
@@ -35,28 +35,51 @@ app.get("/api/destinos", (req, res) => {
   });
 });
 
-// Modifica tu endpoint para cotizar
+// Endpoint para cotizar 
 app.post("/api/cotizar", (req, res) => {
-  const { numPasajeros, lugarIda } = req.body;
+  const { numPasajeros, lugarSalida, destino } = req.body;
   console.log('Número de pasajeros:', numPasajeros);
-  console.log('Lugar de ida:', lugarIda);
+  console.log('Lugar de salida:', lugarSalida);
+  console.log('Destino:', destino);
+  
+  // Validar que el destino sea Medellín si el lugar de salida es 'Trayecto Urbano Un Solo Recorrido (Medellín)'
+  if (lugarSalida === 'Trayecto Urbano Un Solo Recorrido (Medellin)' && destino !== 'Medellin') {
+    return res.status(400).json({ error: 'El destino debe ser Medellín cuando el lugar de salida es Trayecto Urbano Un Solo Recorrido (Medellín).' });
+  }
 
-  // Consulta SQL para obtener los vehículos disponibles según el número de pasajeros y destino
-  const query = `
-    SELECT v.id, v.tipo, v.capacidad, dv.valor AS valor_base_un_dia, m.nombre AS destino
-    FROM vehiculos v
-    JOIN valores_base dv ON dv.vehiculo_id = v.id
-    JOIN destinos m ON m.id = dv.destino_id
-    WHERE v.capacidad >= ? AND m.id = ?
-  `;
+  // Definir la consulta SQL
+  let query;
+  let queryParams;
 
-  // Ejecutar la consulta
-  connection.query(query, [numPasajeros, lugarIda], (err, results) => {
+  // Si el número de pasajeros es mayor a 40, seleccionar todos los vehículos
+  if (numPasajeros > 40) {
+    query = `
+      SELECT v.id, v.tipo, v.capacidad, dv.valor AS valor_base_un_dia, m.nombre AS destino
+      FROM vehiculos v
+      JOIN valores_base dv ON dv.vehiculo_id = v.id
+      JOIN destinos m ON m.id = dv.destino_id
+      WHERE m.id = ?
+    `;
+    queryParams = [destino];
+  } else {
+    // Si el número de pasajeros es menor o igual a 40, aplicar la restricción de capacidad
+    query = `
+      SELECT v.id, v.tipo, v.capacidad, dv.valor AS valor_base_un_dia, m.nombre AS destino
+      FROM vehiculos v
+      JOIN valores_base dv ON dv.vehiculo_id = v.id
+      JOIN destinos m ON m.id = dv.destino_id
+      WHERE v.capacidad >= ? AND m.id = ?
+    `;
+    queryParams = [numPasajeros, destino];
+  }
+
+  // Ejecutar la consulta SQL
+  connection.query(query, queryParams, (err, results) => {
     if (err) {
       console.error("Error ejecutando la consulta: ", err);
       return res.status(500).json({ error: "Error en el servidor" });
     }
-    //console.log('Resultados obtenidos: ', results);
+    // Devolver los vehículos disponibles
     res.json({ vehiculos: results });
   });
 });
