@@ -160,6 +160,11 @@ header::before {
   border-color: #3f735b;
 }
 
+.btn:active{
+  background-color: #bfb73f;
+  border-color: #bfb73f;
+}
+
 .btn-submit {
   width: 100%;
   padding: 0.7rem;

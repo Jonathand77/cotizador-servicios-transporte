@@ -5,7 +5,7 @@ import Buseton from "../assets/img/BusetonOpcion1.jpeg";
 import Bus from "../assets/img/Bus.jpg";
 import Buseta from "../assets/img/Buseta.jpeg";
 import Mercedes from "../assets/img/Van.jpeg";
-import Micronissan from "../assets/img/MicroNissanTipoEscolar.jpg";
+import Micronissan from "../assets/img/MicroNissan.jpeg";
 import axios from "axios";
 import {
   Form,
@@ -43,7 +43,7 @@ const FormCotizacion = () => {
     BUS: Bus,
     BUSETA: Buseta,
     MERCEDES: Mercedes,
-    MICRONISSANURVANESCOLAR: Micronissan,
+    MICRO_NISSAN_URVAN_ESCOLAR: Micronissan,
   };
 
   // Obtener destinos según el lugar de salida

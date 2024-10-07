@@ -35,17 +35,12 @@ app.get("/api/destinos", (req, res) => {
   });
 });
 
-// Endpoint para cotizar 
+// Endpoint para cotizar
 app.post("/api/cotizar", (req, res) => {
   const { numPasajeros, lugarSalida, destino } = req.body;
-  console.log('Número de pasajeros:', numPasajeros);
-  console.log('Lugar de salida:', lugarSalida);
-  console.log('Destino:', destino);
-  
-  // Validar que el destino sea Medellín si el lugar de salida es 'Trayecto Urbano Un Solo Recorrido (Medellín)'
-  if (lugarSalida === 'Trayecto Urbano Un Solo Recorrido (Medellin)' && destino !== 'Medellin') {
-    return res.status(400).json({ error: 'El destino debe ser Medellín cuando el lugar de salida es Trayecto Urbano Un Solo Recorrido (Medellín).' });
-  }
+  console.log("Número de pasajeros:", numPasajeros);
+  console.log("Lugar de salida:", lugarSalida);
+  console.log("Destino:", destino);
 
   // Definir la consulta SQL
   let query;
@@ -54,22 +49,22 @@ app.post("/api/cotizar", (req, res) => {
   // Si el número de pasajeros es mayor a 40, seleccionar todos los vehículos
   if (numPasajeros > 40) {
     query = `
-      SELECT v.id, v.tipo, v.capacidad, dv.valor AS valor_base_un_dia, m.nombre AS destino
-      FROM vehiculos v
-      JOIN valores_base dv ON dv.vehiculo_id = v.id
-      JOIN destinos m ON m.id = dv.destino_id
-      WHERE m.id = ?
-    `;
+    SELECT v.id, v.tipo, v.capacidad, dv.valor AS valor_base_un_dia, m.nombre AS destino
+    FROM vehiculos v
+    JOIN valores_base dv ON dv.vehiculo_id = v.id
+    JOIN destinos m ON m.id = dv.destino_id
+    WHERE m.id = ?
+  `;
     queryParams = [destino];
   } else {
     // Si el número de pasajeros es menor o igual a 40, aplicar la restricción de capacidad
     query = `
-      SELECT v.id, v.tipo, v.capacidad, dv.valor AS valor_base_un_dia, m.nombre AS destino
-      FROM vehiculos v
-      JOIN valores_base dv ON dv.vehiculo_id = v.id
-      JOIN destinos m ON m.id = dv.destino_id
-      WHERE v.capacidad >= ? AND m.id = ?
-    `;
+    SELECT v.id, v.tipo, v.capacidad, dv.valor AS valor_base_un_dia, m.nombre AS destino
+    FROM vehiculos v
+    JOIN valores_base dv ON dv.vehiculo_id = v.id
+    JOIN destinos m ON m.id = dv.destino_id
+    WHERE v.capacidad >= ? AND m.id = ?
+  `;
     queryParams = [numPasajeros, destino];
   }
 
