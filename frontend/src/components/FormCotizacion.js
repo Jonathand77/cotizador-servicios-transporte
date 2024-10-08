@@ -18,6 +18,8 @@ import {
   Alert, // Importar el componente Alert para mostrar mensajes
 } from "react-bootstrap";
 
+const ID_SOLO_UN_RECORRIDO = "1"
+
 const FormCotizacion = () => {
   const [formData, setFormData] = useState({
     fechaIda: "",
@@ -259,9 +261,10 @@ const FormCotizacion = () => {
                   name="destino"
                   value={formData.lugarRegreso}
                   onChange={handleChange}
+                  disabled={formData.lugarSalida === ID_SOLO_UN_RECORRIDO}
                   required
                 >
-                  <option value="">Selecciona un lugar de salida</option>
+                  <option value="">Selecciona un lugar de destino</option>
                   {destinos.map(
                     (
                       destino // Cambiar de municipios a destinos
