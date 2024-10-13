@@ -30,10 +30,10 @@ const FormCotizacion = () => {
     horaRegreso: "",
     temporada: "Baja",
     numPasajeros: 1,
+    noches: 0,
   });
 
   const [vehiculos, setVehiculos] = useState([]);
-  //const [municipios, setMunicipios] = useState([]);
   const [valorBase, setValorBase] = useState(null);
   const [destinos, setDestinos] = useState([]);
   const [errorMessage, setErrorMessage] = useState([]);
@@ -82,6 +82,18 @@ const FormCotizacion = () => {
       );
       return;
     }
+
+    // Calcular el número de noches
+    const fechaIda = new Date(`${formData.fechaIda}T${formData.horaIda}`);
+    const fechaRegreso = new Date(
+      `${formData.fechaRegreso}T${formData.horaRegreso}`
+    );
+
+    const diferenciaTiempo = fechaRegreso - fechaIda;
+    const noches = Math.ceil(diferenciaTiempo / (1000 * 3600 * 24));
+
+    // Actualizar formData con el número de noches
+    setFormData((prev) => ({ ...prev, noches }));
     try {
       const res = await axios.post(
         "http://localhost:5000/api/cotizar",
@@ -98,13 +110,6 @@ const FormCotizacion = () => {
         "Error al obtener los vehículos disponibles. Intente nuevamente."
       );
     }
-
-    // Convertir fechas y horas para comparar
-    const fechaIda = new Date(`${formData.fechaIda}T${formData.horaIda}`);
-    const fechaRegreso = new Date(
-      `${formData.fechaRegreso}T${formData.horaRegreso}`
-    );
-
     // Validar si la fecha de regreso es el mismo día y la hora de regreso es menor a la de ida
     if (
       formData.fechaIda === formData.fechaRegreso &&
@@ -288,6 +293,7 @@ const FormCotizacion = () => {
                   value={formData.numPasajeros}
                   onChange={handleChange}
                   required
+                  min={1}
                 />
               </Form.Group>
             </Col>

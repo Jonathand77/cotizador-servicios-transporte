@@ -35,95 +35,85 @@ app.get("/api/destinos", (req, res) => {
   });
 });
 
-// Un endpoint POST: Body, Params, Query
-
-// http://localhost:5000/api/cotizar/3
-// 3 --> Es un parámetro
-// http://localhost:5000/api/cotizar?numPasajeros=20&lugarSalida=1&destino=2
-// numPasajeros=20&lugarSalida=1&destino=2 --> Query
-// numPasajeros=20
-// lugarSalida=1
-// destino=2
-
 // Endpoint para cotizar
 app.post("/api/cotizar", (req, res) => {
-  const { numPasajeros, lugarSalida, destino } = req.body;
+  const { numPasajeros, lugarSalida, destino, noches } = req.body;
   console.log("Número de pasajeros:", numPasajeros);
   console.log("Lugar de salida:", lugarSalida);
   console.log("Destino:", destino);
+  console.log("Número de noches:", noches); // Para depuración
 
   const ID_MEDELLIN = 2;
 
-  // Opción 1: Cotización sale desde medellín
   // Definir la consulta SQL
-  let query;
-  let queryParamsDestino;
-  let queryParamsSalida;
+  let query = `
+    SELECT v.id, v.tipo, v.capacidad, dv.valor AS valor_base_un_dia, m.nombre AS destino
+    FROM vehiculos v
+    JOIN valores_base dv ON dv.vehiculo_id = v.id
+    JOIN destinos m ON m.id = dv.destino_id
+    WHERE m.id = ?
+  `;
+  let queryParams = [destino];
 
-  // Si el número de pasajeros es mayor a 40, seleccionar todos los vehículos
-  if (numPasajeros > 40) {
-    query = `
-      SELECT v.id, v.tipo, v.capacidad, dv.valor AS valor_base_un_dia, m.nombre AS destino
-      FROM vehiculos v
-      JOIN valores_base dv ON dv.vehiculo_id = v.id
-      JOIN destinos m ON m.id = dv.destino_id
-      WHERE m.id = ?
-    `;
-    queryParamsDestino = [destino];
-    queryParamsSalida = [lugarSalida];
-  } else {
-    // Si el número de pasajeros es menor o igual a 40, aplicar la restricción de capacidad
-    query = `
-      SELECT v.id, v.tipo, v.capacidad, dv.valor AS valor_base_un_dia, m.nombre AS destino
-      FROM vehiculos v
-      JOIN valores_base dv ON dv.vehiculo_id = v.id
-      JOIN destinos m ON m.id = dv.destino_id
-      WHERE v.capacidad >= ? AND m.id = ?
-    `;
-    queryParamsDestino = [numPasajeros, destino];
-    queryParamsSalida = [numPasajeros, lugarSalida];
+  if (numPasajeros <= 40) {
+    query += " AND v.capacidad >= ?";
+    queryParams.push(numPasajeros);
   }
 
-  // Ejecutar la consulta SQL
-  connection.query(query, queryParamsDestino, (err, results) => {
+  // Ejecutar la consulta para obtener vehículos para el destino
+  connection.query(query, queryParams, (err, results) => {
     if (err) {
       console.error("Error ejecutando la consulta: ", err);
       return res.status(500).json({ error: "Error en el servidor" });
     }
 
-    if (lugarSalida === ID_MEDELLIN) {
-      // Devolver los vehículos disponibles
-      res.json({ vehiculos: results });
-      return;
-    }
-
-    // Si el lugar de salida no es medellín, calcular el valor total
-    connection.query(query, queryParamsSalida, (err, resultsSalida) => {
-      if (err) {
-        console.error("Error ejecutando la consulta: ", err);
-        return res.status(500).json({ error: "Error en el servidor" });
-      }
-
-      const vehiculos = results.map((vehiculo) => {
-        const valorDestino = parseFloat(vehiculo.valor_base_un_dia);
-
-        let valorSalida = resultsSalida.find(
-          (v) => v.id === vehiculo.id
-        ).valor_base_un_dia;
-
-        valorSalida = parseFloat(valorSalida);
-
-        const valorTotal = valorSalida * 0.4 + valorSalida + valorDestino;
-
+    if (lugarSalida === ID_MEDELLIN && noches === 1) {
+      const adjustedResults = results.map((vehiculo) => {
+        const valorBase = parseFloat(vehiculo.valor_base_un_dia);
         return {
           ...vehiculo,
-          valor_base_un_dia: `${valorTotal}`,
+          valor_base_un_dia: `${valorBase * 1.5}`,
         };
       });
+      return res.json({ vehiculos: adjustedResults });
+    } else {
+      const querySalida = `
+        SELECT v.id, dv.valor AS valor_base_un_dia
+        FROM vehiculos v
+        JOIN valores_base dv ON dv.vehiculo_id = v.id
+        WHERE dv.destino_id = ?
+      `;
 
-      // Devolver el valor total
-      res.json({ vehiculos });
-    });
+      // Si no es Medellín o si la lógica es diferente
+      connection.query(querySalida, [lugarSalida], (err, resultsSalida) => {
+        if (err) {
+          console.error("Error ejecutando la consulta de salida: ", err);
+          return res.status(500).json({ error: "Error en el servidor" });
+        }
+
+        const vehiculos = results.map((vehiculo) => {
+          const valorDestino = parseFloat(vehiculo.valor_base_un_dia);
+          const salidaVehiculo = resultsSalida.find(
+            (v) => v.id === vehiculo.id
+          );
+          const valorSalida = salidaVehiculo
+            ? parseFloat(salidaVehiculo.valor_base_un_dia)
+            : 0;
+
+          const valorTotal =
+            lugarSalida !== ID_MEDELLIN && noches === 1
+              ? (valorSalida * 1.4 + valorDestino) * 1.5
+              : valorSalida * 0.4 + valorSalida + valorDestino;
+
+          return {
+            ...vehiculo,
+            valor_base_un_dia: `${valorTotal}`,
+          };
+        });
+
+        return res.json({ vehiculos });
+      });
+    }
   });
 });
 
