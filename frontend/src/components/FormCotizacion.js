@@ -52,7 +52,7 @@ const FormCotizacion = () => {
   useEffect(() => {
     const fetchDestinos = async (lugarSalida) => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/destinos`, {
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/destinos`, {
           params: { lugarSalida },
         });
         setDestinos(res.data.destinos); // Guardar destinos
@@ -134,7 +134,7 @@ const FormCotizacion = () => {
       setErrorMessage(""); // Limpiar mensajes de error
       setLoading(true);
       const res = await axios.post(
-        "http://localhost:5000/api/cotizar",
+        `${process.env.REACT_APP_API_URL}/api/cotizar`,
         formData
       );
       setVehiculos(res.data.vehiculos);

@@ -127,7 +127,7 @@ app.post("/api/cotizar", async (req, res) => {
 });
 
 // Iniciar el servidor
-app.listen(5000, () => console.log("Servidor corriendo en puerto 5000"));
+module.exports = app; // Exporta tu aplicación para que Vercel pueda manejarla
 
 //   // Definir la consulta SQL
 //   let query = `
