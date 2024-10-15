@@ -96,7 +96,7 @@ const FormCotizacion = () => {
     setFormData((prev) => ({ ...prev, noches }));
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/cotizar",
+        `${process.env.REACT_APP_API_URL}/api/cotizar`,
         formData
       );
       setVehiculos(res.data.vehiculos);
