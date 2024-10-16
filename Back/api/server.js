@@ -1,12 +1,8 @@
 const express = require("express");
-const cors = require("cors");
+const router = express.Router();
 // const mysql = require("mysql2"); // Importar el paquete MySQL
-const app = express();
 const { createClient } = require("@supabase/supabase-js");
 require("dotenv").config(); // Cargar las variables de entorno
-
-app.use(cors());
-app.use(express.json());
 
 // Configura la conexión a Supabase
 const supabaseUrl = "https://qixroazsocbirzwhoulh.supabase.co";
@@ -43,7 +39,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 //   });
 // });
 
-app.get("/api/destinos", async (req, res) => {
+router.get("/destinos", async (req, res) => {
   const { data, error } = await supabase.from("destinos").select("*");
 
   if (error) {
@@ -54,7 +50,7 @@ app.get("/api/destinos", async (req, res) => {
 });
 
 // Endpoint para cotizar
-app.post("/api/cotizar", async (req, res) => {
+router.post("/cotizar", async (req, res) => {
   const { numPasajeros, lugarSalida, destino, noches } = req.body;
   console.log("Número de pasajeros:", numPasajeros);
   console.log("Lugar de salida:", lugarSalida);
@@ -127,7 +123,7 @@ app.post("/api/cotizar", async (req, res) => {
 });
 
 // Iniciar el servidor
-module.exports = app; // Exporta tu aplicación para que Vercel pueda manejarla
+module.exports = router; // Exporta tu aplicación para que Vercel pueda manejarla
 
 //   // Definir la consulta SQL
 //   let query = `
