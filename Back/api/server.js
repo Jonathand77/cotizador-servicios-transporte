@@ -5,7 +5,7 @@ const { createClient } = require("@supabase/supabase-js");
 require("dotenv").config(); // Cargar las variables de entorno
 
 // Configura la conexión a Supabase
-const supabaseUrl = "https://qixroazsocbirzwhoulh.supabase.co";
+const supabaseUrl = "https://qacduizjwqillqzxhano.supabase.co";
 const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
@@ -79,7 +79,17 @@ router.post("/cotizar", async (req, res) => {
     return res.status(500).json({ error: "Error en el servidor" });
   }
 
-  if (lugarSalida === ID_MEDELLIN && noches === 1) {
+  if (lugarSalida === ID_MEDELLIN && noches === 0) {
+    // Condición para lugarSalida Medellín con 0 noches
+    const adjustedResults = vehiculos.map((vehiculo) => {
+      const valorBase = parseFloat(vehiculo.valores_base[0]?.valor) || 0;
+      return {
+        ...vehiculo,
+        valor_base_un_dia: `${valorBase}`, // Valor base sin modificación
+      };
+    });
+    return res.json({ vehiculos: adjustedResults });
+  } else if (lugarSalida === ID_MEDELLIN && noches === 1) {
     const adjustedResults = vehiculos.map((vehiculo) => {
       const valorBase = parseFloat(vehiculo.valores_base[0]?.valor) || 0; // Manejo de posible valor undefined
       return {
@@ -88,8 +98,51 @@ router.post("/cotizar", async (req, res) => {
       };
     });
     return res.json({ vehiculos: adjustedResults });
+  } else if (noches === 2 || noches === 3) {
+    // Condición para noches 2 o 3
+    if (lugarSalida === ID_MEDELLIN) {
+      // Medellín a cualquier destino con 2 o 3 noches
+      const adjustedResults = vehiculos.map((vehiculo) => {
+        const valorBase = parseFloat(vehiculo.valores_base[0]?.valor) || 0;
+        return {
+          ...vehiculo,
+          valor_base_un_dia: `${valorBase * 1.6}`, // Aplicar la fórmula para Medellín
+        };
+      });
+      return res.json({ vehiculos: adjustedResults });
+    } else {
+      // Lugar de salida diferente de Medellín a cualquier destino con 2 o 3 noches
+      const { data: salidaVehiculos, error: salidaError } = await supabase
+        .from("vehiculos")
+        .select("id, valores_base (valor)")
+        .eq("valores_base.destino_id", lugarSalida);
+
+      if (salidaError) {
+        console.error("Error obteniendo vehículos de salida: ", salidaError);
+        return res.status(500).json({ error: "Error en el servidor" });
+      }
+
+      const vehiculosResponse = vehiculos.map((vehiculo) => {
+        const valorDestino = parseFloat(vehiculo.valores_base[0]?.valor) || 0; // Manejo de posible valor undefined
+        const salidaVehiculo = salidaVehiculos.find(
+          (v) => v.id === vehiculo.id
+        );
+        const valorSalida = salidaVehiculo
+          ? parseFloat(salidaVehiculo.valores_base[0]?.valor) || 0
+          : 0;
+
+        const valorTotal = (valorSalida * 1.4 + valorDestino) * 1.6; // Aplicar fórmula para otros lugares
+
+        return {
+          ...vehiculo,
+          valor_base_un_dia: `${valorTotal}`,
+        };
+      });
+
+      return res.json({ vehiculos: vehiculosResponse });
+    }
   } else {
-    // Lógica alternativa si no es Medellín o si la lógica es diferente
+    // Lógica alternativa si es 1 noche y lugarSalida no es Medellín
     const { data: salidaVehiculos, error: salidaError } = await supabase
       .from("vehiculos")
       .select("id, valores_base (valor)")

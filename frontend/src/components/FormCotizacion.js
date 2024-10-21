@@ -18,7 +18,7 @@ import {
   Alert, // Importar el componente Alert para mostrar mensajes
 } from "react-bootstrap";
 
-const ID_SOLO_UN_RECORRIDO = "1"
+const ID_SOLO_UN_RECORRIDO = "1";
 
 const FormCotizacion = () => {
   const [formData, setFormData] = useState({
@@ -52,9 +52,12 @@ const FormCotizacion = () => {
   useEffect(() => {
     const fetchDestinos = async (lugarSalida) => {
       try {
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/destinos`, {
-          params: { lugarSalida },
-        });
+        const res = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/destinos`,
+          {
+            params: { lugarSalida },
+          }
+        );
         setDestinos(res.data.destinos); // Guardar destinos
       } catch (error) {
         console.error("Error al obtener los destinos", error);
@@ -89,11 +92,17 @@ const FormCotizacion = () => {
       `${formData.fechaRegreso}T${formData.horaRegreso}`
     );
 
-    const diferenciaTiempo = fechaRegreso - fechaIda;
-    const noches = Math.ceil(diferenciaTiempo / (1000 * 3600 * 24));
+    // Si la hora de regreso es antes de las 24:00, ajustamos la fecha de regreso
+    const ajusteHoraRegreso = fechaRegreso.getHours() < 24 ? 1 : 0;
+    const noches = Math.max(
+      0,
+      Math.ceil((fechaRegreso - fechaIda) / (1000 * 3600 * 24)) -
+        ajusteHoraRegreso
+    );
 
     // Actualizar formData con el número de noches
     setFormData((prev) => ({ ...prev, noches }));
+
     try {
       const res = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/cotizar`,
@@ -101,15 +110,16 @@ const FormCotizacion = () => {
       );
       setVehiculos(res.data.vehiculos);
       if (res.data.vehiculos.length > 0) {
-        setValorBase(res.data.vehiculos[0].valor_base_un_dia); // Asignar el valor base del destino
+        setValorBase(res.data.vehiculos[0].valor_base_un_dia);
       }
     } catch (error) {
       console.error("Error al enviar el formulario", error);
-      setLoading(false); // Finalizar loading
+      setLoading(false);
       setErrorMessage(
         "Error al obtener los vehículos disponibles. Intente nuevamente."
       );
     }
+
     // Validar si la fecha de regreso es el mismo día y la hora de regreso es menor a la de ida
     if (
       formData.fechaIda === formData.fechaRegreso &&
