@@ -57,7 +57,7 @@ router.post("/cotizar", async (req, res) => {
   console.log("Destino:", destino);
   console.log("Número de noches:", noches); // Para depuración
 
-  const ID_MEDELLIN = 2;
+  const ID_MEDELLIN = "2";
 
   const { data: vehiculos, error: vehiculosError } = await supabase
     .from("vehiculos")

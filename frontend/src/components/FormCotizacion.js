@@ -26,7 +26,7 @@ const FormCotizacion = () => {
     lugarSalida: "",
     horaIda: "",
     fechaRegreso: "",
-    destino: "",
+    destino: 0,
     horaRegreso: "",
     temporada: "Baja",
     numPasajeros: 1,
@@ -63,9 +63,9 @@ const FormCotizacion = () => {
         console.error("Error al obtener los destinos", error);
       }
     };
-
+   
     if (formData.lugarSalida) {
-      fetchDestinos(formData.lugarSalida);
+      fetchDestinos(parseInt(formData.lugarSalida));
     } else {
       setDestinos([]); // Resetea los destinos si no hay lugar de salida
     }
