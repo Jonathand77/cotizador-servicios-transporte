@@ -88,6 +88,10 @@ For more information, visit:
 
 For deployment details, check: [Create React App Deployment Guide](https://facebook.github.io/create-react-app/docs/deployment)
 
+## License 📄
+
+This project is licensed under the (MIT LICENSE) License - see the [LICENSE](LICENSE) file for details
+
 ## Expressions of Gratitude 🎁
 
 * Share this project with others 📢
