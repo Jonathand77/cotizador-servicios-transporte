@@ -14,7 +14,6 @@ import {
   Row,
   Col,
   Card,
-  ListGroup,
   Alert, // Importar el componente Alert para mostrar mensajes
 } from "react-bootstrap";
 
@@ -34,9 +33,8 @@ const FormCotizacion = () => {
   });
 
   const [vehiculos, setVehiculos] = useState([]);
-  const [valorBase, setValorBase] = useState(null);
   const [destinos, setDestinos] = useState([]);
-  const [errorMessage, setErrorMessage] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [avisoPasajeros, setAvisoPasajeros] = useState(false); // Estado para mostrar aviso de pasajeros
 
@@ -109,9 +107,6 @@ const FormCotizacion = () => {
         formData
       );
       setVehiculos(res.data.vehiculos);
-      if (res.data.vehiculos.length > 0) {
-        setValorBase(res.data.vehiculos[0].valor_base_un_dia);
-      }
     } catch (error) {
       console.error("Error al enviar el formulario", error);
       setLoading(false);
@@ -148,9 +143,6 @@ const FormCotizacion = () => {
         formData
       );
       setVehiculos(res.data.vehiculos);
-      if (res.data.vehiculos.length > 0) {
-        setValorBase(res.data.vehiculos[0].valor_base_un_dia); // Asignar el valor base del destino
-      }
     } catch (error) {
       console.error("Error al enviar el formulario", error);
       setErrorMessage(
@@ -313,6 +305,12 @@ const FormCotizacion = () => {
           {avisoPasajeros && (
             <Alert variant="warning" className="mt-2">
               Requerirá más de un vehículo.
+            </Alert>
+          )}
+
+          {errorMessage && (
+            <Alert variant="danger" className="mt-2">
+              {errorMessage}
             </Alert>
           )}
 
