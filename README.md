@@ -1,102 +1,212 @@
-# Transportation Quoting System
+# 🚌 Transportation Quoting System
 
-**Project Description:**
-This project is a web-based transportation quoting system In collaboration with the Colombian bus company COOTRAESPECIALES. ![Logo de Cootraespeciales](https://cootraespeciales.com/sitio/wp-content/uploads/2022/06/logo-cootraespeciales.svg)
-Designed to simplify and automate the process of generating transportation cost estimates. The system allows users to select departure and return locations, specify the number of passengers, and choose from available vehicles. It calculates quotes based on predefined base prices and vehicle capacity, making the process efficient and user-friendly.
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react)
+![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?logo=node.js)
+![Express](https://img.shields.io/badge/Express-4.x-000000?logo=express)
+![Database](https://img.shields.io/badge/Database-Supabase%20%7C%20MySQL-3ECF8E?logo=supabase)
+![Architecture](https://img.shields.io/badge/Architecture-Full%20Stack-blue)
+![GitHub repo size](https://img.shields.io/github/repo-size/Jonathand77/cotizador-servicios-transporte)
+![GitHub contributors](https://img.shields.io/github/contributors/Jonathand77/cotizador-servicios-transporte)
+![GitHub last commit](https://img.shields.io/github/last-commit/Jonathand77/cotizador-servicios-transporte)
+![Languages](https://img.shields.io/github/languages/count/Jonathand77/cotizador-servicios-transporte)
+![License](https://img.shields.io/badge/License-MIT-success)
 
-**Technologies Used:**
+## 👤 Autor
 
-- **Programming Languages:** HTML <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original-wordmark.svg" alt="html5" width="40" height="40"/> CSS <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/css3/css3-original-wordmark.svg" alt="css3" width="40" height="40"/> JavaScript <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg" alt="javascript" width="40" height="40"/>
-- **Tools and Frameworks:** React <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original-wordmark.svg" alt="react" width="40" height="40"/> Bootstrap <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/bootstrap/bootstrap-plain-wordmark.svg" alt="bootstrap" width="40" height="40"/>
-- **Database:** MySQL <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mysql/mysql-original-wordmark.svg" alt="mysql" width="40" height="40"/>
+| 👨‍💻 Nombre | 📧 Correo | 🏫 Link directo al repositorio | 🐙 Usuario GitHub |
+|---|---|---|---|
+| **Jonathan David Fernandez Vargas** | jonathanfdez62@gmail.com | [LinkRepositorio](https://github.com/Jonathand77/cotizador-servicios-transporte) | [jonathand77](https://github.com/jonathand77) |
 
-## Getting Started 🚀
+**Sistema web de cotización de transporte desarrollado en colaboración con la empresa colombiana COOTRAESPECIALES.**
 
-_These instructions will help you get a copy of the project up and running on your local machine for development and testing purposes._
+---
 
-See **Deployment** to learn how to deploy the project.
+Sistema web de cotización de transporte desarrollado en colaboración con la empresa colombiana **COOTRAESPECIALES**.
+Diseñado para simplificar y automatizar el proceso de generación de estimaciones de costos de transporte, el sistema permite calcular cotizaciones según lugar de salida, destino, número de pasajeros y noches, sugiriendo vehículos según capacidad y reglas de negocio.
 
-### Prerequisites 📋
 
-_What you need to install to run the software:_
+![Logo de Cootraespeciales](https://cootraespeciales.com/sitio/wp-content/uploads/2022/06/logo-cootraespeciales.svg)
 
-- Git installed on your system (Download from [git-scm.com](https://git-scm.com) and follow the installation instructions)
-- GitHub account
-- An IDE such as Visual Studio Code
-- A web browser such as Chrome
-- Node.js and npm installed
-- MySQL database setup
+---
 
-### Installation 🔧
+## 📌 Tabla de contenido
 
-_Step-by-step instructions to set up a development environment:_
+- [Descripción](#-descripción)
+- [Stack tecnológico](#-stack-tecnológico)
+- [Estructura del proyecto](#-estructura-del-proyecto)
+- [Requisitos previos](#-requisitos-previos)
+- [Instalación y ejecución local](#-instalación-y-ejecución-local)
+- [Endpoints principales](#-endpoints-principales)
+- [Scripts disponibles](#-scripts-disponibles)
+- [Deployment](#-deployment)
+- [Licencia](#-licencia)
 
-1. **Clone the repository**
-   ```sh
-   git clone https://github.com/user/transport-quote-system.git
-   ```
+---
 
-2. **Navigate to the project directory**
-   ```sh
-   cd transport-quote-system
-   ```
+## 🔍 Descripción
 
-3. **Install dependencies**
-   ```sh
-   npm install
-   ```
+Este proyecto automatiza la generación de cotizaciones de transporte para facilitar el proceso comercial y operativo.
 
-4. **Set up the database**
-   - Import the database schema into MySQL
-   - Configure the database connection in the backend
+**Flujo general:**
+1. El usuario selecciona origen, destino, pasajeros y noches.
+2. El frontend consulta la API.
+3. El backend calcula valores con reglas de negocio y capacidad de vehículos.
+4. Se retorna la cotización estimada.
 
-5. **Run the development server**
-   ```sh
-   npm start
-   ```
-   Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-## Available Scripts
+## 🛠️ Stack tecnológico
 
-In the project directory, you can run:
+- **Frontend:** React, Bootstrap, Axios
+- **Backend:** Node.js, Express
+- **Datos:** Supabase (actual) / MySQL (soporte histórico)
+- **Lenguajes:** HTML, CSS, JavaScript
 
-### `npm start`
-Runs the app in development mode. The page will reload when changes are made.
+---
 
-### `npm test`
-Launches the test runner in interactive watch mode.
+## 📁 Estructura del proyecto
 
-### `npm run build`
-Builds the app for production, optimizing performance.
+```text
+cotizador-servicios-transporte/
+├── Back/
+│   ├── index.js
+│   ├── package.json
+│   ├── api/
+│   │   └── server.js
+│   └── vercel.json
+├── frontend/
+│   ├── package.json
+│   ├── public/
+│   └── src/
+└── README.md
+```
 
-### `npm run eject`
-Removes the single build dependency and allows full customization of configuration files. **Note: This is irreversible.**
+---
 
-## Learn More
+## ✅ Requisitos previos
 
-For more information, visit:
+- Git
+- Node.js 18+ y npm
+- Visual Studio Code (recomendado)
+- Navegador web (Chrome/Edge/Firefox)
+- Variables de entorno configuradas (`Back/.env` y `frontend/.env` cuando aplique)
+
+---
+
+## 🚀 Instalación y ejecución local
+
+### 1) Clonar repositorio
+
+```bash
+git clone https://github.com/user/cotizador-servicios-transporte.git
+cd cotizador-servicios-transporte
+```
+
+### 2) Instalar dependencias
+
+```bash
+npm install
+npm --prefix Back install
+npm --prefix frontend install
+```
+
+### 3) Configurar variables de entorno
+
+En `Back/.env`, define al menos:
+
+```env
+SUPABASE_KEY=tu_clave_de_supabase
+PORT=8080
+```
+
+### 4) Ejecutar backend
+
+```bash
+cd Back
+node index.js
+```
+
+API disponible en: `http://localhost:8080/api`
+
+### 5) Ejecutar frontend
+
+En otra terminal:
+
+```bash
+cd frontend
+npm start
+```
+
+Frontend disponible en: `http://localhost:3000`
+
+---
+
+## 🔌 Endpoints principales
+
+- **GET** `/api/destinos`  
+  Retorna el listado de destinos disponibles.
+
+- **POST** `/api/cotizar`  
+  Calcula cotización según reglas de negocio.
+
+Ejemplo de body para cotizar:
+
+```json
+{
+  "numPasajeros": 20,
+  "lugarSalida": "2",
+  "destino": "5",
+  "noches": 1
+}
+```
+
+---
+
+## 📜 Scripts disponibles
+
+### Frontend (`frontend/package.json`)
+
+- `npm start`: inicia en modo desarrollo
+- `npm test`: ejecuta pruebas
+- `npm run build`: construye para producción
+- `npm run eject`: expone configuración de CRA (irreversible)
+
+### Backend (`Back/package.json`)
+
+- No tiene script de inicio definido actualmente.
+- Ejecución recomendada: `node index.js`
+
+---
+
+## 🌐 Deployment
+
+Para despliegue de frontend con CRA:
+- [Create React App Deployment Guide](https://facebook.github.io/create-react-app/docs/deployment)
+
+Backend incluye configuración para Vercel en `Back/vercel.json`.
+
+---
+
+## 📚 Recursos útiles
+
 - [Create React App Documentation](https://facebook.github.io/create-react-app/docs/getting-started)
 - [React Documentation](https://reactjs.org/)
 - [Bootstrap Documentation](https://getbootstrap.com/)
 - [MySQL Documentation](https://dev.mysql.com/doc/)
 
-## Authors ✒️
+---
 
-* **Jonathan Fernandez** - [Jonathand77](https://github.com/Jonathand77)
+## 📄 Licencia
 
-## Deployment
-
-For deployment details, check: [Create React App Deployment Guide](https://facebook.github.io/create-react-app/docs/deployment)
-
-## License 📄
-
-This project is licensed under the (MIT LICENSE) License - see the [LICENSE](LICENSE) file for details
-
-## Expressions of Gratitude 🎁
-
-* Share this project with others 📢
-* Give a star on GitHub ⭐
-* Provide feedback to improve the system 🤓
+Este proyecto está bajo licencia **MIT**.  
+Consulta el archivo [LICENSE](LICENSE) para más detalles.
 
 ---
-⌨️ by [Jonathand77](https://github.com/Jonathand77) 😊
+
+## 🙌 Agradecimientos
+
+- Comparte este proyecto 📢
+- Dale una estrella en GitHub ⭐
+- Envía feedback para seguir mejorándolo 🤓
+
+---
